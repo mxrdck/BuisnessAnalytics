@@ -20,6 +20,7 @@ class PatientHealth(base):
 
     patientnr = Column(Integer, ForeignKey("Patient.patient_nr"), primary_key=True)
     healthvalue = Column(Integer, ForeignKey("HealthValue.gid"), primary_key=True)
+    date = Column(DateTime, nullable=False)
 
 
 class Patient(base):
