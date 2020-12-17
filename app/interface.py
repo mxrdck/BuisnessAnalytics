@@ -51,4 +51,3 @@ class Interface:
         except:
             return "Could not find patient in database."
 
-    
