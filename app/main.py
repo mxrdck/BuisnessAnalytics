@@ -1,15 +1,31 @@
-from models import HealthValue, HealthParameter, Patient, patienthealth
+from models import HealthValue, HealthParameter, Patient, PatientHealth
 from models import session, base, db
 
 
+#create patient, healthparam and add to db
+'''p = Patient(height=2,weight=60, first_name="Tom",last_name="Riddle",sex="male")
+hp = HealthParameter(denotation="Blutzucker")
+session.add(p)
+session.add(hp)
 
+#create a healthvaluev for a healthparam
+hv = HealthValue(value=22)
+hp.values.append(hv)
+session.commit()'''
 
+#map hv tp patient
+'''hv = session.query(HealthValue).first()
 p = session.query(Patient).first()
+#ph constructur is empty bc date has a default
+ph = PatientHealth()
+ph.health_value = hv
+p.health_values.append(ph)
 
-print(p)
+session.commit()'''
 
-hv = session.query(HealthValue).first()
 
-p.patient_health.append(hv)
-
+#try do delete patient--> what happens to relation table? 
+#works if model has "cascade=delete"
+p = session.query(Patient).first()
+session.delete(p)
 session.commit()
