@@ -15,8 +15,9 @@ base = declarative_base()
 
 class PatientHealth(base):
     __tablename__ = "patient_health"
-    patient_id = Column(Integer, ForeignKey('Patient.id'), primary_key=True)
-    healthvalue_id = Column(Integer, ForeignKey('HealthValue.id'), primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    patient_id = Column(Integer, ForeignKey('Patient.id'))
+    healthvalue_id = Column(Integer, ForeignKey('HealthValue.id'))
     date = Column(Date, default=date.today())
     patient = relationship('Patient',back_populates='health_values')
     health_value = relationship('HealthValue',back_populates='patients')
@@ -24,10 +25,10 @@ class PatientHealth(base):
 class Patient(base):
     __tablename__ = 'Patient'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     height = Column(Float, nullable=False)
     weight = Column(Float, nullable=False)
-    first_name = Column(String(256))
+    first_name = Column(String(256), nullable=False)
     last_name = Column(String(256), nullable=False)
     sex = Column(String, nullable=False)
     health_values = relationship('PatientHealth', back_populates="patient", cascade="delete")
@@ -40,7 +41,7 @@ class Patient(base):
 class HealthValue(base):
     __tablename__ = 'HealthValue'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     value = Column(Integer, nullable=False)
     parameter = Column(Integer, ForeignKey('HealthParameter.id'))
     patients = relationship('PatientHealth', back_populates="health_value", cascade="delete")
@@ -50,7 +51,7 @@ class HealthValue(base):
 class HealthParameter(base):
     __tablename__ = 'HealthParameter'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     denotation = Column(String(256), nullable=False, unique=True)
     values = relationship(
         'HealthValue',
