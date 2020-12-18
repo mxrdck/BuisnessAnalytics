@@ -34,7 +34,7 @@ class Patient(base):
     
 
     def __repr__(self):
-        return '<Patient {}: {} {}>'.format(self.patient_nr, self.first_name, self.last_name)
+        return '<Patient {}: {} {}>'.format(self.id, self.first_name, self.last_name)
 
 
 class HealthValue(base):
@@ -43,19 +43,22 @@ class HealthValue(base):
     id = Column(Integer, primary_key=True)
     value = Column(Integer, nullable=False)
     parameter = Column(Integer, ForeignKey('HealthParameter.id'))
-    patients = relationship('PatientHealth', back_populates="health_value")
+    patients = relationship('PatientHealth', back_populates="health_value", cascade="delete")
 
-
+    def __repr__(self):
+        return '<HealthValue {}: {} {}>'.format(self.id, session.query(HealthParameter).filter_by(id=self.parameter).first().denotation, self.value)
 class HealthParameter(base):
     __tablename__ = 'HealthParameter'
 
     id = Column(Integer, primary_key=True)
-    denotation = Column(String(256), nullable=False)
+    denotation = Column(String(256), nullable=False, unique=True)
     values = relationship(
         'HealthValue',
         backref='HealthParameter',
-        lazy='dynamic')
+        lazy='dynamic', cascade="delete, save-update")
 
+    def __repr__(self):
+        return '<HealthParameter {}: {}>'.format(self.id, self.denotation)
 
 Session = sessionmaker(db)
 session = Session()
