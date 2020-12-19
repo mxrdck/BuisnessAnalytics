@@ -49,6 +49,24 @@ average_for_each_health_param_per_patient <- function(patient_name) {
   return(health_params_avg)
 }
 
+# Durchschnitt über die Werte pro Gesundheitsparameters über alle Patienten
+
+average_for_each_health_param <- function() {
+  
+  health_params <- health_parameter$denotation
+  
+  health_params_avg <- c()
+  
+  for(param in health_params) {
+    
+    vals <- all_vals_for_patient_health_param(patient_name=patient_name, param_description=param)
+    
+    health_params_avg <- c(health_params_avg, mean(vals))
+  }
+  
+  return(health_params_avg)
+}
+
 
 res = all_vals_for_patient_health_param(patient_name="Frey", 
                                         param_description="Plebismus")
@@ -56,6 +74,9 @@ print(res)
 
 
 res = average_for_each_health_param_per_patient(patient_name="Frey")
+print(res)
+
+res = average_for_each_health_param()
 print(res)
 
 
