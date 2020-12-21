@@ -1,5 +1,6 @@
 #library(RPostgres)
 #library(rlist)
+#library(ggplot2)
 
 con <- dbConnect(RPostgres::Postgres(), 
                  dbname = "patientdb", 
@@ -14,27 +15,106 @@ patient <- dbReadTable(con, "Patient")
 patient_health <- dbReadTable(con, "patient_health")
 
 
-# Alle Werte eines bestimmten Patienten jeweils für einen Gesundheitsparameter
-HealthParameterID <- 1
-PantientID <- 1
-sql <- paste('SELECT first_name, last_name, denotation, value 
-              FROM "Patient"
-              INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
-              INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
-              INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
-              WHERE "HealthParameter".id=', HealthParameterID, 'AND "Patient".id=', PantientID) 
+vals_by_patient_and_health <- function(HealthParameterID, PantientID) {
+  # Alle Werte eines bestimmten Patienten jeweils für einen Gesundheitsparameter
+  sql <- paste('SELECT first_name, last_name, denotation, value 
+                FROM "Patient"
+                INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
+                INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
+                INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
+                WHERE "HealthParameter".id=', HealthParameterID, 'AND "Patient".id=', PantientID) 
+  
+  query <- dbGetQuery(con, sql)
+  print(query)
+}
 
-query <- dbGetQuery(con, sql)
-print(query)
+avg_vals_by_patient_and_health <- function(PantientID) {
+  # Durchschnitt über die Werte eines Patienten pro Gesundheitsparameter
+  sql <- paste('SELECT denotation, AVG(value) 
+                FROM "Patient"
+                INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
+                INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
+                INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
+                WHERE "Patient".id=', PantientID, 'Group by denotation') 
+  
+  query <- dbGetQuery(con, sql)
+  print(query)
+}
 
-# Durchschnitt über die Werte eines Patienten pro Gesundheitsparameter
-PantientID <- 1
-sql <- paste('SELECT denotation, AVG(value) 
-              FROM "Patient"
-              INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
-              INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
-              INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
-              WHERE "Patient".id=', PantientID, 'Group by denotation') 
+avg_health <- function() {
+  # Durchschnitt über die Werte pro Gesundheitsparameters über alle Patienten
+  sql <- paste('SELECT denotation, AVG(value) 
+                FROM "Patient"
+                INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
+                INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
+                INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
+                Group by denotation') 
+  
+  query <- dbGetQuery(con, sql)
+  print(query)
+}
 
-query <- dbGetQuery(con, sql)
-print(query)
+median_health <- function() {
+  # Median der Werte pro Gesundheitsparameter über alle Patienten
+  sql <- paste('SELECT denotation, value
+                FROM "Patient"
+                INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
+                INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
+                INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id') 
+  
+  query <- dbGetQuery(con, sql)
+  res = aggregate(query[, 2], list(query$denotation), median)
+  print(res)
+}
+
+sd_health_byhealth <- function(HealthParameterID) {
+# Standardabweichung der Werte eines bestimmten Gesundheitsparameters über alle Patienten
+  HealthParameterID <- 1
+  sql <- paste('SELECT denotation, value
+                FROM "Patient"
+                INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
+                INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
+                INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
+                WHERE "HealthParameter".id=', HealthParameterID)  
+  
+  query <- dbGetQuery(con, sql)
+  res = aggregate(query[, 2], list(query$denotation), sd)
+  print(res)
+}
+
+plot_vals_by_patient_and_health <- function(HealthParameterID, PantientID) {
+  # Zeichnen Sie geeignete Diagramme zur Visualisierung der Daten mit Hilfe von ggplot
+  # Alle Parameter-Werte eines bestimmten Patienten zu einem bestimmten Parameter
+  HealthParameterID <- 1
+  PantientID <- 1
+  sql <- paste('SELECT value 
+                FROM "Patient"
+                INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
+                INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
+                INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
+                WHERE "HealthParameter".id=', HealthParameterID, 'AND "Patient".id=', PantientID) 
+  
+  query <- dbGetQuery(con, sql)
+  p <- ggplot(query, aes(x=rownames(query), y=query[,])) + geom_bar(stat = "identity", width=0.2)
+  print(p)
+}
+
+plot_avg_health_by_patient <- function(PantientID) {
+  # Durchschnitte der Parameterwerte über alle Patienten (also pro Patient Durchschnitt der Parameterwerte eines bestimmten Parameters)
+  # peo patient durschnitt für werte
+  
+  PantientID <- 1
+  sql <- paste('SELECT denotation, AVG(value) 
+                FROM "Patient"
+                INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
+                INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
+                INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
+                WHERE "Patient".id=', PantientID, 'Group by denotation') 
+  
+  query <- dbGetQuery(con, sql)
+  print(query)
+  query <- dbGetQuery(con, sql)
+  p <- ggplot(query, aes(x=query[,1], y=query[,2])) + geom_bar(stat = "identity", width=0.2)
+  print(p)
+}
+
