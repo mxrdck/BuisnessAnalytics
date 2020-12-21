@@ -20,7 +20,7 @@ class PatientHealth(base):
     healthvalue_id = Column(Integer, ForeignKey('HealthValue.id'))
     date = Column(Date, default=date.today())
     patient = relationship('Patient',back_populates='health_values')
-    health_value = relationship('HealthValue',back_populates='patients')
+    health_value = relationship('HealthValue',back_populates='patients', cascade = "delete")
 
 class Patient(base):
     __tablename__ = 'Patient'
@@ -31,7 +31,7 @@ class Patient(base):
     first_name = Column(String(256), nullable=False)
     last_name = Column(String(256), nullable=False)
     sex = Column(String, nullable=False)
-    health_values = relationship('PatientHealth', back_populates="patient", cascade="delete")
+    health_values = relationship('PatientHealth', back_populates="patient", cascade="all, delete, delete-orphan")
     
 
     def __repr__(self):
