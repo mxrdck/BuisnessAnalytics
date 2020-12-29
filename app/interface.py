@@ -7,14 +7,15 @@ class Interface:
 
     """
     def __init__(self):
-        '''what should happen here?'''
+        '''what should happens here?'''
         pass
 
     # Basic CD: Patient, HealthParameter, HealthValue, PatientHealth
     # gui needs only create and delete operations for all tables and relations
     # patients are always queried by id
 
-
+    #TODO: add param, delete param, add value, delete value, add value to patient, add value to param, remove value from patient, remove value from param
+    #TODO: Show data methods: Show HV for Patient, get params, get patients
     # patients
 
     def add_patient(self, fname, lname, height, weight, sex):
@@ -48,7 +49,7 @@ class Interface:
         else:
             return "No Patient found with ID {}.".format(id)
 
-    #TODO: add param, delete param, add value, delete value, add value to patient, add value to param, remove value from patient, remove value from param
+    #HealthParameters
 
     def add_health_param(self,denotation):
         ''' method to add health param to database
@@ -78,6 +79,7 @@ class Interface:
         else:
             return "No Health Parameter found with ID {}.".format(id)
 
+    #HealthValues
 
     def add_value_to_patient(self, patient_id, parameter_id, hv_date, hv_value):
         #TODO: try catch 
@@ -104,8 +106,63 @@ class Interface:
             return "No Patient with ID {} found".format(patient_id)
 
 
-    def remove_value_from_patient(self, patient_id, hv_id):
+    def remove_value_from_patient(self, hv_id):
         #TODO: try catch 
-        hv = session.query(HealthValue).filter_by(id=hv_id)
-        session.delete(hv)
-        session.commit()
+
+        try:
+            hv = session.query(HealthValue).filter_by(id=hv_id)
+        except:
+            return "No HealthValue with ID {} found.".format(hv_id)
+        
+        if hv:
+            session.delete(hv)
+            session.commit()
+        
+        else:
+            return "No HealthValue with ID {} found.".format(hv_id)
+
+
+
+
+    def get_all_patients(self, only_ids=False):
+        
+        try:
+            patients = session.query(Patients).all()
+        except:
+            return "Cannot get patient data."
+
+        if only_ids:
+            return [p.id for p in patients]
+        
+        else:
+            return patients
+
+
+    def get_all_params(self, only_ids=False):
+        
+        try:
+            params = session.query(HealthParameter).all()
+        except:
+            return "Cannot get Health Parameter data."
+
+        if only_ids:
+            return [p.id for p in params]
+        
+        else:
+            return params
+
+    def get_values_for_patient(self, patient_id):
+
+        p = session.query(Patient).filter_by(id=patient_id).first()
+
+        if p:
+            hvs = p.health_values
+
+            if len(hvs)>0:
+                return [ph.health_value for ph in hvs]
+            
+            else:
+                return "Patient has no health values yet."
+
+        else:
+            return "No Patient with ID {} found.".format(patient_id)
