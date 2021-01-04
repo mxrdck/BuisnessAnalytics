@@ -172,18 +172,24 @@ class Page3(tk.Frame):
 		label.grid(row = 0, column = 2, padx = 10, pady = 10) 
 
 		l1 = tk.Label(self, text="Patienten ID").grid(row=2, column=1)
-		l2 = tk.Label(self, text="GNr").grid(row=2, column=3)
-
-		e1 = tk.Entry(self).grid(row=2, column=2)
+		l2 = tk.Label(self, text="Wert(Gld)").grid(row=2, column=3)
+		l3 = tk.Label(self, text="Parameter(GNr)").grid(row=3, column=1)
+		l4 = tk.Label(self, text="Wert").grid(row=3, column=1)
+	
 		
 		PaID = [1,2,3]
 		var1 = tk.StringVar(self)
 		var1.set(PaID[1])
 
 		opt = tk.OptionMenu(self,var1,*PaID).grid(row=2, column=2, pady=8)
+		#Wert unsicher ob liste oder rnd
+		e1 = tk.Entry(self).grid(row=3, column=2)
+		e2 = tk.Entry(self).grid(row=4, column=2)
 		
-		b1 = tk.Button(self, text="Parameter anlegen", width = 20, height = 2, bg="light slate blue").grid(column=1,row=3, padx=15, pady=40)
-		b2 = tk.Button(self, text="Parameter löschen",width = 20, height = 2, bg="light slate blue").grid(row=3, column=3, pady=40)
+		
+		
+		b1 = tk.Button(self, text="Wert speichern", width = 20, height = 2, bg="light slate blue").grid(column=1,row=3, padx=15, pady=40)
+		b2 = tk.Button(self, text="Wert löschen",width = 20, height = 2, bg="light slate blue").grid(row=3, column=3, pady=40)
 
 		lt = tk.Label(self, text="Hasmidischer Platzhalter", font = "Helvetica 15 bold").grid(row=5, column=1)
 		# button to show frame 3 with text 
