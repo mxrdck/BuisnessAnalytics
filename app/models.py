@@ -44,7 +44,7 @@ class HealthValue(base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     value = Column(Integer, nullable=False)
     parameter = Column(Integer, ForeignKey('HealthParameter.id'))
-    patients = relationship('PatientHealth', back_populates="health_value", cascade="delete")
+    patients = relationship('PatientHealth', back_populates="health_value", cascade="all, delete, delete-orphan")
 
     def __repr__(self):
         return '<HealthValue {}: {} {}>'.format(self.id, session.query(HealthParameter).filter_by(id=self.parameter).first().denotation, self.value)
@@ -56,7 +56,7 @@ class HealthParameter(base):
     values = relationship(
         'HealthValue',
         backref='HealthParameter',
-        lazy='dynamic', cascade="delete, save-update")
+        cascade="all,delete, delete-orphan, save-update")
 
     def __repr__(self):
         return '<HealthParameter {}: {}>'.format(self.id, self.denotation)
