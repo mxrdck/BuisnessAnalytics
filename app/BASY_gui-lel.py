@@ -51,26 +51,20 @@ class StartPage(tk.Frame):
 		
 		# label of frame Layout 2 
 		label = tk.Label(self, text ="Gesundheitssystem von FMT", font = "Helvetica 20 bold") 
-		
-		# putting the grid in its place by using 
-		# grid 
-		label.grid(row = 1, column=1, padx = 10, pady = 10) 
+		label.grid(row = 1, padx = 10, pady = 10) 
 
-		button1 = tk.Button(self, text ="Hasmid anlegen", bg = "light slate blue",
+		button1 = tk.Button(self, text ="Patient anlegen", bg = "light slate blue",
 		width = 25, height = 2, command = lambda : controller.show_frame(Page1)) 
-	
-		# putting the button in its place by 
-		# using grid 
-		button1.grid(row = 2,  column=1, padx = 10, pady = 10) 
+		button1.grid(row = 2, padx = 10, pady = 10) 
 
 		## button to show frame 2 with text layout2 
 		button2 = tk.Button(self, text ="Gesundheitsparameter anlegen", bg = "light slate blue",
 		width = 25, height = 2, command = lambda : controller.show_frame(Page2)) 
-		button2.grid(row = 3,  column=1, padx = 10, pady = 10) 
+		button2.grid(row = 3, padx = 10, pady = 10) 
 
 		button3 = tk.Button(self, text ="Werte für Patienten erfassen", bg = "light slate blue",
 		width = 25, height = 2, command = lambda : controller.show_frame(Page3))
-		button3.grid(row = 4,  column=1, padx = 10, pady = 10)
+		button3.grid(row = 4, padx = 10, pady = 10)
 
 		
 
@@ -102,7 +96,7 @@ class Page1(tk.Frame):
 		e2 = tk.Entry(self).grid(row=4, column=1, pady=8)
 		e3 = tk.Entry(self).grid(row=5, column=1, pady=8)
 
-		b1 = tk.Button(self, text="Patient anlegen", width = 25, height = 2, bg="light slate blue").grid(row=6, column=1, pady=8)
+		b1 = tk.Button(self, text="Patient anlegen", width = 20, height = 2, bg="light slate blue").grid(row=6, column=1, pady=8)
 		
 		lo2=tk.Label(self, text="PatientenNr").grid(row=2, column=2, pady=8)
 		PNr = [1,2,3]
