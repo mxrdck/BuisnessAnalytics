@@ -127,7 +127,7 @@ class Interface:
     def get_all_patients(self, only_ids=False):
         
         try:
-            patients = session.query(Patients).all()
+            patients = session.query(Patient).all()
         except:
             return "Cannot get patient data."
 

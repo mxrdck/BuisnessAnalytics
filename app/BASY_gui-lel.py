@@ -1,199 +1,224 @@
-import tkinter as tk 
-from tkinter import ttk 
+import tkinter as tk
+from tkinter import ttk
+from interface import Interface
+
+db = Interface()
+LARGEFONT = ("Verdana", 25)
 
 
-LARGEFONT =("Verdana", 25) 
+class tkinterApp(tk.Tk):
 
-class tkinterApp(tk.Tk): 
-	
-	# __init__ function for class tkinterApp 
-	def __init__(self, *args, **kwargs): 
-		
-		# __init__ function for class Tk 
-		tk.Tk.__init__(self, *args, **kwargs) 
-		
-		# creating a container 
-		container = tk.Frame(self) 
-		container.pack() #side = "top", fill = "both" expand = True) 
+    # __init__ function for class tkinterApp
+    def __init__(self, *args, **kwargs):
 
-		container.grid_rowconfigure(0, weight = 1) 
-		container.grid_columnconfigure(0, weight = 1) 
+        # __init__ function for class Tk
+        tk.Tk.__init__(self, *args, **kwargs)
 
-		# initializing frames to an empty array 
-		self.frames = {} 
+        # creating a container
+        container = tk.Frame(self)
+        container.pack()  # side = "top", fill = "both" expand = True)
 
-		# iterating through a tuple consisting 
-		# of the different page layouts 
-		for F in (StartPage, Page1, Page2, Page3): 
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
 
-			frame = F(container, self) 
+        # initializing frames to an empty array
+        self.frames = {}
 
-			# initializing frame of that object from 
-			# startpage, page1, page2 respectively with 
-			# for loop 
-			self.frames[F] = frame 
+        # iterating through a tuple consisting
+        # of the different page layouts
+        for F in (StartPage, Page1, Page2, Page3):
 
-			frame.grid(row = 0, column = 0, sticky ="nsew") 
+            frame = F(container, self)
 
-		self.show_frame(StartPage) 
+            # initializing frame of that object from
+            # startpage, page1, page2 respectively with
+            # for loop
+            self.frames[F] = frame
 
-	# to display the current frame passed as 
-	# parameter 
-	def show_frame(self, cont): 
-		frame = self.frames[cont] 
-		frame.tkraise() 
+            frame.grid(row=0, column=0, sticky="nsew")
 
-# first window frame startpage 
+        self.show_frame(StartPage)
 
-class StartPage(tk.Frame): 
-	def __init__(self, parent, controller): 
-		tk.Frame.__init__(self, parent)
-		
-		# label of frame Layout 2 
-		label = tk.Label(self, text ="Gesundheitssystem von FMT", font = "Helvetica 20 bold") 
-		label.grid(row = 1, padx = 10, pady = 10) 
+    # to display the current frame passed as
+    # parameter
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
 
-		button1 = tk.Button(self, text ="Patient anlegen", bg = "light slate blue",
-		width = 25, height = 2, command = lambda : controller.show_frame(Page1)) 
-		button1.grid(row = 2, padx = 10, pady = 10) 
-
-		## button to show frame 2 with text layout2 
-		button2 = tk.Button(self, text ="Gesundheitsparameter anlegen", bg = "light slate blue",
-		width = 25, height = 2, command = lambda : controller.show_frame(Page2)) 
-		button2.grid(row = 3, padx = 10, pady = 10) 
-
-		button3 = tk.Button(self, text ="Werte für Patienten erfassen", bg = "light slate blue",
-		width = 25, height = 2, command = lambda : controller.show_frame(Page3))
-		button3.grid(row = 4, padx = 10, pady = 10)
-
-		
+# first window frame startpage
 
 
-# second window frame page1 
-class Page1(tk.Frame): 
-	
-	def __init__(self, parent, controller): 
-		
-		tk.Frame.__init__(self, parent) 
-		label = tk.Label(self, text ="Patient anlegen", font ="Helvetica 20 bold") 
-		label.grid(row = 0, padx = 10, pady = 10, columnspan=4)
+class StartPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
 
-		lo1 = tk.Label(self, text="Geschlecht").grid(row=2, pady=8)
+        # label of frame Layout 2
+        label = tk.Label(self, text="Gesundheitssystem von FMT",
+                         font="Helvetica 20 bold")
+        label.grid(row=1, padx=10, pady=10)
 
-		var1 = tk.StringVar(self)
-		var1.set("männlich") #falls nichts vorausgewählt sein soll .set(OptionList[0])
+        button1 = tk.Button(self, text="Patient anlegen", bg="light slate blue",
+                            width=25, height=2, command=lambda: controller.show_frame(Page1))
+        button1.grid(row=2, padx=10, pady=10)
 
-		opt = tk.OptionMenu(self, var1, "männlich", "weiblich").grid(row=2, column=1, pady=8)
+        # button to show frame 2 with text layout2
+        button2 = tk.Button(self, text="Gesundheitsparameter anlegen", bg="light slate blue",
+                            width=25, height=2, command=lambda: controller.show_frame(Page2))
+        button2.grid(row=3, padx=10, pady=10)
 
-
-		l1 = tk.Label(self, text="Vorname").grid(row=3, pady=8)
-		l4 = tk.Label(self, text ="Nachname").grid(row=3, pady=8, padx=15, column=2)
-		l2 = tk.Label(self, text="Gewicht").grid(row=4, pady=8)
-		l3 = tk.Label(self, text="Größe").grid(row=5, pady=8)
-	   
-		e1 = tk.Entry(self).grid(row=3, column=1, pady=8)
-		e4 = tk.Entry(self).grid(row=3, column=3, pady=8)
-		e2 = tk.Entry(self).grid(row=4, column=1, pady=8)
-		e3 = tk.Entry(self).grid(row=5, column=1, pady=8)
-
-		b1 = tk.Button(self, text="Patient anlegen", width = 20, height = 2, bg="light slate blue").grid(row=6, column=1, pady=8)
-		
-		lo2=tk.Label(self, text="PatientenNr").grid(row=2, column=2, pady=8)
-		PNr = [1,2,3]
-		var2 = tk.StringVar(self)
-		var2.set(PNr[1])
-
-		opt = tk.OptionMenu(self,var2,*PNr).grid(row=2, column=3, pady=8)
-		#opt.config(width, font)
-		
+        button3 = tk.Button(self, text="Werte für Patienten erfassen", bg="light slate blue",
+                            width=25, height=2, command=lambda: controller.show_frame(Page3))
+        button3.grid(row=4, padx=10, pady=10)
 
 
-		# button to show frame 2 with text 
-		# layout2 
-		button1 = ttk.Button(self, text ="zurück", 
-							command = lambda : controller.show_frame(StartPage)) 
-	
-		# putting the button in its place 
-		# by using grid 
-		button1.grid(padx = 10, pady = 10) 
+# second window frame page1
+class Page1(tk.Frame):
 
-		# button to show frame 2 with text 
-		# layout2 
-		#button2 = ttk.Button(self, text ="Page 2", 
-							#command = lambda : controller.show_frame(Page2)) 
-	
-		# putting the button in its place by 
-		# using grid 
-		#button2.grid(row = 2, column = 1, padx = 10, pady = 10) 
+    def test(self):
+        print("asdpoifajsdpoif")
+        try:
+            first_name = self.e1.get()
+            last_name = self.e4.get()
+            weight = int(self.e2.get())
+            height = float(self.e3.get())
+            sex = self.var1.get()
+
+            db.add_patient(first_name,last_name,height,weight,sex)
+        except:
+            print("Keggitfehler")
+
+    def __init__(self, parent, controller):
+
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Patient anlegen",
+                         font="Helvetica 20 bold")
+        label.grid(row=0, padx=10, pady=10, columnspan=4)
+
+        lo1 = tk.Label(self, text="Geschlecht").grid(row=2, pady=8)
+
+        self.var1 = tk.StringVar(self)
+        # falls nichts vorausgewählt sein soll .set(OptionList[0])
+        self.var1.set("männlich")
+
+        opt = tk.OptionMenu(self, self.var1, "männlich", "weiblich").grid(
+            row=2, column=1, pady=8)
+
+        l1 = tk.Label(self, text="Vorname").grid(row=3, pady=8)
+        l4 = tk.Label(self, text="Nachname").grid(
+            row=3, pady=8, padx=15, column=2)
+        l2 = tk.Label(self, text="Gewicht").grid(row=4, pady=8)
+        l3 = tk.Label(self, text="Größe").grid(row=5, pady=8)
+
+        self.e1 = tk.Entry(self)
+        self.e2 = tk.Entry(self)
+        self.e3 = tk.Entry(self)
+        self.e4 = tk.Entry(self)
+
+        self.e1.grid(row=3, column=1, pady=8)
+        self.e4.grid(row=3, column=3, pady=8)
+        self.e2.grid(row=4, column=1, pady=8)
+        self.e3.grid(row=5, column=1, pady=8)
+
+        b1 = tk.Button(self, text="Patient anlegen", width=20, height=2,
+                       bg="light slate blue", command=self.test).grid(row=6, column=1, pady=8)
+
+        lo2 = tk.Label(self, text="PatientenNr").grid(row=2, column=2, pady=8)
+        PNr = [1, 2, 3]
+        var2 = tk.StringVar(self)
+        var2.set(PNr[1])
+
+        opt = tk.OptionMenu(self, var2, *PNr).grid(row=2, column=3, pady=8)
+        # opt.config(width, font)
+
+        # button to show frame 2 with text
+        # layout2
+        button1 = ttk.Button(self, text="zurück",
+                             command=lambda: controller.show_frame(StartPage))
+
+        # putting the button in its place
+        # by using grid
+        button1.grid(padx=10, pady=10)
+
+        # button to show frame 2 with text
+        # layout2
+        # button2 = ttk.Button(self, text ="Page 2",
+        # command = lambda : controller.show_frame(Page2))
+
+        # putting the button in its place by
+        # using grid
+        # button2.grid(row = 2, column = 1, padx = 10, pady = 10)
 
 
+# third window frame page2
+class Page2(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(
+            self, text="Gesundheitsparameter anlegen", font="Helvetica 20 bold")
+        label.grid(row=0, column=1, padx=10, pady=10, columnspan=4)
+
+        l1 = tk.Label(self, text="Bezeichnung").grid(row=2, column=1)
+        l2 = tk.Label(self, text="GNr").grid(row=2, column=3)
+
+        e1 = tk.Entry(self).grid(row=2, column=2)
+
+        GNr = [1, 2, 3]
+        var1 = tk.StringVar(self)
+        var1.set(GNr[1])
+
+        opt = tk.OptionMenu(self, var1, *GNr).grid(row=2, column=4, pady=8)
+
+        b1 = tk.Button(self, text="Parameter anlegen", width=20, height=2,
+                       bg="light slate blue").grid(column=1, row=3, padx=15, pady=40)
+        b2 = tk.Button(self, text="Parameter löschen", width=20, height=2,
+                       bg="light slate blue").grid(row=3, column=3, pady=40)
+        # button to show frame 3 with text
+        # layout3
+        button2 = ttk.Button(self, text="zurück",
+                             command=lambda: controller.show_frame(StartPage))
+
+        # putting the button in its place by
+        # using grid
+        button2.grid(column=1, padx=10, pady=40)
 
 
-# third window frame page2 
-class Page2(tk.Frame): 
-	def __init__(self, parent, controller): 
-		tk.Frame.__init__(self, parent) 
-		label = tk.Label(self, text ="Gesundheitsparameter anlegen", font = "Helvetica 20 bold") 
-		label.grid(row = 0, column = 1, padx = 10, pady = 10, columnspan=4) 
+class Page3(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Wert für Patienten eingeben",
+                         font="Helvetica 20 bold")
+        label.grid(row=0, column=1, padx=10, pady=10, columnspan=4)
 
-		l1 = tk.Label(self, text="Bezeichnung").grid(row=2, column=1)
-		l2 = tk.Label(self, text="GNr").grid(row=2, column=3)
+        l1 = tk.Label(self, text="Patienten ID").grid(row=2, column=1)
+        l2 = tk.Label(self, text="Wert(Gld)").grid(row=2, column=3)
+        l3 = tk.Label(self, text="Parameter(GNr)").grid(row=3, column=1)
+        l4 = tk.Label(self, text="Datum").grid(row=4, column=1)
+        l5 = tk.Label(self, text="Wert").grid(row=5, column=1)
 
-		e1 = tk.Entry(self).grid(row=2, column=2)
-		
-		GNr = [1,2,3]
-		var1 = tk.StringVar(self)
-		var1.set(GNr[1])
+        PaID = [1, 2, 3]
+        var1 = tk.StringVar(self)
+        var1.set(PaID[1])
 
-		opt = tk.OptionMenu(self,var1,*GNr).grid(row=2, column=4, pady=8)
-		
-		b1 = tk.Button(self, text="Parameter anlegen", width = 20, height = 2, bg="light slate blue").grid(column=1,row=3, padx=15, pady=40)
-		b2 = tk.Button(self, text="Parameter löschen",width = 20, height = 2, bg="light slate blue").grid(row=3, column=3, pady=40)
-		# button to show frame 3 with text 
-		# layout3 
-		button2 = ttk.Button(self, text ="zurück", 
-							command = lambda : controller.show_frame(StartPage)) 
-	
-		# putting the button in its place by 
-		# using grid 
-		button2.grid(column=1 ,padx = 10, pady = 40) 
+        opt = tk.OptionMenu(self, var1, *PaID).grid(row=2, column=2, pady=8)
+        # Wert unsicher ob liste oder rnd
+        e1 = tk.Entry(self).grid(row=4, column=2)
+        e2 = tk.Entry(self).grid(row=5, column=2)
 
-class Page3(tk.Frame): 
-	def __init__(self, parent, controller): 
-		tk.Frame.__init__(self, parent) 
-		label = tk.Label(self, text ="Wert für Patienten eingeben", font = "Helvetica 20 bold") 
-		label.grid(row = 0, column = 1, padx = 10, pady = 10, columnspan=4) 
+        b1 = tk.Button(self, text="Wert speichern", width=20, height=2,
+                       bg="light slate blue").grid(column=1, row=6, padx=15, pady=40)
+        b2 = tk.Button(self, text="Wert löschen", width=20, height=2,
+                       bg="light slate blue").grid(row=3, column=3, pady=40)
 
-		l1 = tk.Label(self, text="Patienten ID").grid(row=2, column=1)
-		l2 = tk.Label(self, text="Wert(Gld)").grid(row=2, column=3)
-		l3 = tk.Label(self, text="Parameter(GNr)").grid(row=3, column=1)
-		l4 = tk.Label(self, text="Datum").grid(row=4, column=1)
-		l5 = tk.Label(self, text="Wert").grid(row=5, column=1)
-		
-	
-		
-		PaID = [1,2,3]
-		var1 = tk.StringVar(self)
-		var1.set(PaID[1])
+        # button to show frame 3 with text
+        # layout3
+        button2 = ttk.Button(self, text="zurück",
+                             command=lambda: controller.show_frame(StartPage))
 
-		opt = tk.OptionMenu(self,var1,*PaID).grid(row=2, column=2, pady=8)
-		#Wert unsicher ob liste oder rnd
-		e1 = tk.Entry(self).grid(row=4, column=2)
-		e2 = tk.Entry(self).grid(row=5, column=2)
-		
-		
-		
-		b1 = tk.Button(self, text="Wert speichern", width = 20, height = 2, bg="light slate blue").grid(column=1,row=6, padx=15, pady=40)
-		b2 = tk.Button(self, text="Wert löschen",width = 20, height = 2, bg="light slate blue").grid(row=3, column=3, pady=40)
+        # putting the button in its place by
+        # using grid
+        button2.grid(column=1, padx=10, pady=40)
 
-		# button to show frame 3 with text 
-		# layout3 
-		button2 = ttk.Button(self, text ="zurück", 
-							command = lambda : controller.show_frame(StartPage)) 
-	
-		# putting the button in its place by 
-		# using grid 
-		button2.grid(column=1 ,padx = 10, pady = 40) 
-# Driver Code 
-app = tkinterApp() 
-app.mainloop() 
+
+# Driver Code
+app = tkinterApp()
+app.mainloop()
