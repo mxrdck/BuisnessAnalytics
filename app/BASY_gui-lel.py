@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from interface import Interface
+from tkinter import messagebox as mbox  
 
 db = Interface()
 LARGEFONT = ("Verdana", 25)
@@ -74,18 +75,29 @@ class StartPage(tk.Frame):
 # second window frame page1
 class Page1(tk.Frame):
 
-    def test(self):
-        print("asdpoifajsdpoif")
+    def b_add_patient(self):
         try:
             first_name = self.e1.get()
             last_name = self.e4.get()
             weight = int(self.e2.get())
             height = float(self.e3.get())
             sex = self.var1.get()
-
             db.add_patient(first_name,last_name,height,weight,sex)
-        except:
-            print("Keggitfehler")
+            self.update_ids()
+        except ValueError:
+            mbox.showerror('Value Error!','Please use Strings for first and last name and sex, integer for weight and float for height')
+        except Exception as e:
+            mbox.showerror('Unknown Error', str(e))
+
+
+    def b_del_patient(self):
+        try:
+            p_id = int(self.var2.get())
+            db.delete_patient(p_id)
+            self.update_ids()
+        except Exception as e:
+            mbox.showerror('Error',str(e))
+
 
     def __init__(self, parent, controller):
 
@@ -119,25 +131,29 @@ class Page1(tk.Frame):
         self.e2.grid(row=4, column=1, pady=8)
         self.e3.grid(row=5, column=1, pady=8)
 
-        b1 = tk.Button(self, text="Patient anlegen", width=20, height=2,
-                       bg="light slate blue", command=self.test).grid(row=6, column=1, pady=8)
+        b_add = tk.Button(self, text="Patient anlegen", width=20, height=2,
+                       bg="light slate blue", command=self.b_add_patient).grid(row=6, column=1, pady=8)
+
+        b_delete = tk.Button(self, text="Patient löschen", width=20, height=2,
+                       bg="light slate blue", command=self.b_del_patient).grid(row=6, column=2, pady=40)
 
         lo2 = tk.Label(self, text="PatientenNr").grid(row=2, column=2, pady=8)
-        PNr = [1, 2, 3]
-        var2 = tk.StringVar(self)
-        var2.set(PNr[1])
+        PNr = db.get_all_patients(only_ids=True)
+        self.var2 = tk.StringVar(self)
+        self.var2.set(PNr[0])
 
-        opt = tk.OptionMenu(self, self.var2, *PNr).grid(row=2, column=3, pady=8)
+        self.opt2 = tk.OptionMenu(self, self.var2, *PNr)
+        self.opt2.grid(row=2, column=3, pady=8)
         # opt.config(width, font)
 
         # button to show frame 2 with text
         # layout2
-        button1 = ttk.Button(self, text="zurück",
+        b_back = ttk.Button(self, text="zurück",
                              command=lambda: controller.show_frame(StartPage))
 
         # putting the button in its place
         # by using grid
-        button1.grid(padx=10, pady=10)
+        b_back.grid(padx=10, pady=10)
 
         # button to show frame 2 with text
         # layout2
@@ -151,6 +167,28 @@ class Page1(tk.Frame):
 
 # third window frame page2
 class Page2(tk.Frame):
+
+    def b_add_param(self):
+
+        try:
+            denotation = self.e1.get()
+            ret = db.add_health_param(denotation)
+            mbox.showinfo('Success', ret)
+        except Exception as e:
+            mbox.showerror('Error', str(e))
+
+    
+    def b_del_param(self):
+
+        try:
+            param = int(self.var1.get())
+            ret = db.delete_health_param(param)
+            mbox.showinfo('Success', ret)
+        except Exception as e:
+            mbox.showerror('Error', str(e))
+
+
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         label = tk.Label(
@@ -163,16 +201,16 @@ class Page2(tk.Frame):
         self.e1 = tk.Entry(self)
         self.e1.grid(row=2, column=2)
 
-        GNr = [1, 2, 3]
+        GNr = db.get_all_params(only_ids=True)
         self.var1 = tk.StringVar(self)
         self.var1.set(GNr[1])
 
         opt = tk.OptionMenu(self, self.var1, *GNr).grid(row=2, column=4, pady=8)
 
         b1 = tk.Button(self, text="Parameter anlegen", width=20, height=2,
-                       bg="light slate blue").grid(column=1, row=3, padx=15, pady=40)
+                       bg="light slate blue", command=self.b_add_param).grid(column=1, row=3, padx=15, pady=40)
         b2 = tk.Button(self, text="Parameter löschen", width=20, height=2,
-                       bg="light slate blue").grid(row=3, column=3, pady=40)
+                       bg="light slate blue", command=self.b_del_param).grid(row=3, column=3, pady=40)
         # button to show frame 3 with text
         # layout3
         button2 = ttk.Button(self, text="zurück",
