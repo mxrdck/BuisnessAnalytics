@@ -127,7 +127,7 @@ class Page1(tk.Frame):
         var2 = tk.StringVar(self)
         var2.set(PNr[1])
 
-        opt = tk.OptionMenu(self, var2, *PNr).grid(row=2, column=3, pady=8)
+        opt = tk.OptionMenu(self, self.var2, *PNr).grid(row=2, column=3, pady=8)
         # opt.config(width, font)
 
         # button to show frame 2 with text
@@ -160,13 +160,14 @@ class Page2(tk.Frame):
         l1 = tk.Label(self, text="Bezeichnung").grid(row=2, column=1)
         l2 = tk.Label(self, text="GNr").grid(row=2, column=3)
 
-        e1 = tk.Entry(self).grid(row=2, column=2)
+        self.e1 = tk.Entry(self)
+        self.e1.grid(row=2, column=2)
 
         GNr = [1, 2, 3]
-        var1 = tk.StringVar(self)
-        var1.set(GNr[1])
+        self.var1 = tk.StringVar(self)
+        self.var1.set(GNr[1])
 
-        opt = tk.OptionMenu(self, var1, *GNr).grid(row=2, column=4, pady=8)
+        opt = tk.OptionMenu(self, self.var1, *GNr).grid(row=2, column=4, pady=8)
 
         b1 = tk.Button(self, text="Parameter anlegen", width=20, height=2,
                        bg="light slate blue").grid(column=1, row=3, padx=15, pady=40)
@@ -196,13 +197,15 @@ class Page3(tk.Frame):
         l5 = tk.Label(self, text="Wert").grid(row=5, column=1)
 
         PaID = [1, 2, 3]
-        var1 = tk.StringVar(self)
-        var1.set(PaID[1])
+        self.var1 = tk.StringVar(self)
+        self.var1.set(PaID[1])
 
-        opt = tk.OptionMenu(self, var1, *PaID).grid(row=2, column=2, pady=8)
+        opt = tk.OptionMenu(self, self.var1, *PaID).grid(row=2, column=2, pady=8)
         # Wert unsicher ob liste oder rnd
-        e1 = tk.Entry(self).grid(row=4, column=2)
-        e2 = tk.Entry(self).grid(row=5, column=2)
+        self.e1 = tk.Entry(self)
+        self.e1.grid(row=4, column=2)
+        self.e2 = tk.Entry(self)
+        self.e2.grid(row=5, column=2)
 
         b1 = tk.Button(self, text="Wert speichern", width=20, height=2,
                        bg="light slate blue").grid(column=1, row=6, padx=15, pady=40)
