@@ -82,8 +82,11 @@ class Page1(tk.Frame):
             weight = int(self.e2.get())
             height = float(self.e3.get())
             sex = self.var1.get()
-            db.add_patient(first_name,last_name,height,weight,sex)
-            self.update_ids()
+            ret = db.add_patient(first_name,last_name,height,weight,sex)
+            mbox.showinfo('Success', ret)
+            #update all dropdowns afterwards
+            self.update_patients_dropdown()
+            self.clear_all()
         except ValueError:
             mbox.showerror('Value Error!','Please use Strings for first and last name and sex, integer for weight and float for height')
         except Exception as e:
@@ -93,11 +96,25 @@ class Page1(tk.Frame):
     def b_del_patient(self):
         try:
             p_id = int(self.var2.get())
-            db.delete_patient(p_id)
-            self.update_ids()
+            ret = db.delete_patient(p_id)
+            mbox.showinfo('Success', ret)
+            self.update_patients_dropdown()
         except Exception as e:
             mbox.showerror('Error',str(e))
 
+    def update_patients_dropdown(self):
+        menu = self.opt2["menu"]
+        menu.delete(0, "end")
+
+        for p in db.get_all_patients(only_ids=True):
+            menu.add_command(label=p, 
+                             command=lambda value=p: self.var2.set(p))
+
+    def clear_all(self):
+        self.e1.delete(0,'end')
+        self.e2.delete(0,'end')
+        self.e3.delete(0,'end')
+        self.e4.delete(0,'end')
 
     def __init__(self, parent, controller):
 
@@ -174,6 +191,8 @@ class Page2(tk.Frame):
             denotation = self.e1.get()
             ret = db.add_health_param(denotation)
             mbox.showinfo('Success', ret)
+            self.update_dropdowns()
+            self.clear_all()
         except Exception as e:
             mbox.showerror('Error', str(e))
 
@@ -184,8 +203,21 @@ class Page2(tk.Frame):
             param = int(self.var1.get())
             ret = db.delete_health_param(param)
             mbox.showinfo('Success', ret)
+            self.update_dropdowns()
         except Exception as e:
             mbox.showerror('Error', str(e))
+
+
+    def update_dropdowns(self):
+        menu = self.opt["menu"]
+        menu.delete(0, "end")
+
+        for p in db.get_all_params(only_ids=True):
+            menu.add_command(label=p, 
+                             command=lambda value=p: self.var1.set(p))
+
+    def clear_all(self):
+        self.e1.delete(0,'end')
 
 
 
@@ -205,7 +237,8 @@ class Page2(tk.Frame):
         self.var1 = tk.StringVar(self)
         self.var1.set(GNr[0])
 
-        opt = tk.OptionMenu(self, self.var1, *GNr).grid(row=2, column=4, pady=8)
+        self.opt = tk.OptionMenu(self, self.var1, *GNr)
+        self.opt.grid(row=2, column=4, pady=8)
 
         b1 = tk.Button(self, text="Parameter anlegen", width=20, height=2,
                        bg="light slate blue", command=self.b_add_param).grid(column=1, row=3, padx=15, pady=40)
@@ -229,6 +262,7 @@ class Page3(tk.Frame):
             val = int(val)
             ret = db.remove_value_from_patient(val)
             mbox.showinfo('Success', str(ret))
+            self.update_dropdowns()
         except Exception as e:
             mbox.showerror('Error', str(e))
 
@@ -241,12 +275,35 @@ class Page3(tk.Frame):
             hv_value = self.e2.get()
             
 
-
             ret = db.add_value_to_patient(patient_id, parameter_id, hv_date, hv_value)
             mbox.showinfo("Success", ret)
-
+            self.update_dropdowns()
         except Exception as e:
             mbox.showerror("Error", str(e))
+
+    def update_dropdowns(self):
+        menu = self.opt1["menu"]
+        menu.delete(0, "end")
+
+        for val in db.get_values_for_patient(self.var1.get()):
+            menu.add_command(label=val, 
+                             command=lambda value=val: self.var3.set(val))
+
+    def clear_all(self):
+        self.e1.delete(0,'end')
+        self.e2.delete(0,'end')
+
+    def populate_hv_option_menu(self, val):
+        pat = int(val)
+
+        menu = self.opt1["menu"]
+        menu.delete(0, "end")
+
+        for val in db.get_values_for_patient(pat):
+            menu.add_command(label=val, 
+                             command=lambda value=val: self.var3.set(val))
+
+                             
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -266,23 +323,28 @@ class Page3(tk.Frame):
         # falls nichts vorausgewählt sein soll .set(OptionList[0])
         self.var2.set(paramID[0])
 
-        opt = tk.OptionMenu(self, self.var2, *paramID).grid(
+        self.opt0 = tk.OptionMenu(self, self.var2, *paramID)
+        self.opt0.grid(
             row=3, column=2, pady=8)
 
-        hvs = db.get_values_for_patient(3)
+        
+
+
+        self.PaID = db.get_all_patients(only_ids=True)
+        self.var1 = tk.StringVar(self)
+        self.var1.set(self.PaID[0])
+
+        hvs = db.get_values_for_patient(self.PaID[0])
         self.var3 = tk.StringVar(self)
         # falls nichts vorausgewählt sein soll .set(OptionList[0])
         self.var3.set(hvs[0])
 
-        opt = tk.OptionMenu(self, self.var3, *hvs).grid(
+        self.opt1 = tk.OptionMenu(self, self.var3, *hvs)
+        self.opt1.grid(
             row=2, column=4, pady=8)
 
-
-        PaID = db.get_all_patients(only_ids=True)
-        self.var1 = tk.StringVar(self)
-        self.var1.set(PaID[0])
-
-        opt = tk.OptionMenu(self, self.var1, *PaID).grid(row=2, column=2, pady=8)
+        self.opt2 = tk.OptionMenu(self, self.var1, *self.PaID, command=self.populate_hv_option_menu)
+        self.opt2.grid(row=2, column=2, pady=8)
         # Wert unsicher ob liste oder rnd
         self.e1 = tk.Entry(self)
         self.e1.grid(row=4, column=2)
