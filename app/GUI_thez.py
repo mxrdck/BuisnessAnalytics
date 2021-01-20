@@ -132,9 +132,9 @@ class PageOne(tk.Frame):
 
         b_add = tk.Button(f3, text="Patient anlegen", width=20, height=2,
                        bg="cornflower blue", activebackground="LightBlue1", command=self.b_add_patient)
-        b_add.grid(row=1, column=2, pady=10)
+        b_add.grid(row=1, column=2, pady=10, padx=10)
 
-        b_delete = tk.Button(f3, text="Patient anlegen", width=20, height=2,
+        b_delete = tk.Button(f3, text="Patient löschen", width=20, height=2,
                        bg="cornflower blue", activebackground="LightBlue1", command=self.b_del_patient)
         b_delete.grid(row=1, column=3, pady=10)
 
@@ -143,10 +143,10 @@ class PageOne(tk.Frame):
         self.var2 = tk.StringVar(self)
         self.var2.set(PNr[0])
 
-        self.opt2 = tk.OptionMenu(f2, self.var1, self.var2, *PNr)
-        opt["menu"].config(bg="cornflower blue", activebackground="LightBlue1", activeforeground="gray1")
-        opt.config(bg="cornflower blue", activebackground="LightBlue1")
-        opt.grid(row=2, column=3, pady=8)
+        self.opt2 = tk.OptionMenu(f2, self.var2, *PNr)
+        self.opt2["menu"].config(bg="cornflower blue", activebackground="LightBlue1", activeforeground="gray1")
+        self.opt2.config(bg="cornflower blue", activebackground="LightBlue1")
+        self.opt2.grid(row=2, column=3, pady=8)
 
         # button to show frame 2 with text
         # layout2
@@ -157,6 +157,7 @@ class PageOne(tk.Frame):
                   #command=lambda: master.switch_frame(StartPage)).grid()
 
 class PageTwo(tk.Frame):
+
     def b_add_param(self):
 
         try:
@@ -220,11 +221,11 @@ class PageTwo(tk.Frame):
         self.opt.grid(row=2, column=4, pady=8)
 
         b1 = tk.Button(f3, text="Parameter anlegen", width=20, height=2,
-                       bg="cornflower blue", activebackground="LightBlue1")
+                       bg="cornflower blue", activebackground="LightBlue1", command=self.b_add_param)
         b1.grid(column=2, row=1, padx=15, pady=10)
 
         b2 = tk.Button(f3, text="Parameter löschen", width=20, height=2,
-                       bg="cornflower blue", activebackground="LightBlue1")
+                       bg="cornflower blue", activebackground="LightBlue1", command=self.b_del_param)
         b2.grid(row=1, column=3, pady=10)
         # button to show frame 3 with text
         # layout3
@@ -235,15 +236,15 @@ class PageTwo(tk.Frame):
 
 class PageThree(tk.Frame):
 
-def b_delete_val_from_patient(self):
-        try:
-            val = self.var3.get().split(' ')[0].replace(':','')
-            val = int(val)
-            ret = db.remove_value_from_patient(val)
-            mbox.showinfo('Success', str(ret))
-            self.update_dropdowns()
-        except Exception as e:
-            mbox.showerror('Error', str(e))
+    def b_delete_val_from_patient(self):
+            try:
+                val = self.var3.get().split(' ')[0].replace(':','')
+                val = int(val)
+                ret = db.remove_value_from_patient(val)
+                mbox.showinfo('Success', str(ret))
+                self.update_dropdowns()
+            except Exception as e:
+                mbox.showerror('Error', str(e))
 
     def b_add_val_to_patient(self):
         try:
@@ -297,23 +298,28 @@ def b_delete_val_from_patient(self):
         l1 = tk.Label(f2, text="Patienten ID", bg="azure").grid(row=2, column=1)
         l2 = tk.Label(f2, text="Wert(Gld)", bg="azure").grid(row=2, column=3)
         l3 = tk.Label(f2, text="Parameter(GNr)", bg="azure").grid(row=3, column=1)
-        l4 = tk.Label(f2, text="Datum (YYYY-MM-DD)", bg="azure").grid(row=4, column=1)
+        l4 = tk.Label(f2, text="Datum (YYYY-MM-DD)", bg="azure").grid(row=4, column=1, pady=10)
         l5 = tk.Label(f2, text="Wert", bg="azure").grid(row=5, column=1)
 
         paramID = db.get_all_params(only_ids=False)
         self.var2 = tk.StringVar(self)
         self.var2.set(paramID[0])
 
-        self.opt0 = tk.OptionMenu(f2, self.var1, *PaID)
+       
+        self.PaID = db.get_all_patients(only_ids=True)
+        self.var1 = tk.StringVar(self)
+        self.var1.set(self.PaID[0])
+
+        self.opt2 = tk.OptionMenu(f2, self.var1, *self.PaID, command=self.populate_hv_option_menu)
+        self.opt2.grid(row=2, column=2, pady=8)
+        self.opt2["menu"].config(bg="cornflower blue", activebackground="LightBlue1", activeforeground="gray1")
+        self.opt2.config(bg="cornflower blue", activebackground="LightBlue1")
+
+        self.opt0 = tk.OptionMenu(f2, self.var2, *paramID)
         self.opt0.grid(row=2, column=2, pady=8)
         self.opt0["menu"].config(bg="cornflower blue", activebackground="LightBlue1", activeforeground="gray1")
         self.opt0.config(bg="cornflower blue", activebackground="LightBlue1")
         self.opt0.grid(row=3, column=2, pady=8)
-
-        
-        self.PaID = db.get_all_patients(only_ids=True)
-        self.var1 = tk.StringVar(self)
-        self.var1.set(self.PaID[0])
 
         hvs = db.get_values_for_patient(self.PaID[0])
         self.var3 = tk.StringVar(self)
@@ -323,14 +329,15 @@ def b_delete_val_from_patient(self):
         self.opt1 = tk.OptionMenu(f2, self.var3, *hvs)
         self.opt1.grid(
             row=2, column=4, pady=8)
+        self.opt1["menu"].config(bg="cornflower blue", activebackground="LightBlue1", activeforeground="gray1")
+        self.opt1.config(bg="cornflower blue", activebackground="LightBlue1")
 
-        self.opt2 = tk.OptionMenu(f2, self.var1, *self.PaID, command=self.populate_hv_option_menu)
-        self.opt2.grid(row=2, column=2, pady=8)
+        
 
         # Wert unsicher ob liste oder rnd
-        self.e1 = tk.Entry(f2, bg="azure")
+        self.e1 = tk.Entry(f2)
         self.e1.grid(row=4, column=2)
-        self.e2 = tk.Entry(f2, bg="azure")
+        self.e2 = tk.Entry(f2)
         self.e2.grid(row=5, column=2)
 
         b1 = tk.Button(f3, text="Wert speichern", width=20, height=2, bg="cornflower blue", 

@@ -94,7 +94,10 @@ class Interface:
             hv = HealthValue(value=hv_value)
             hp.values.append(hv)
 
-            ph = PatientHealth(date=hv_date)
+            if hv_date != "" and hv_date is not None:
+                ph = PatientHealth(date=hv_date)
+            else:
+                ph = PatientHealth()
             #session.add(ph)
             ph.health_value = hv
             p.health_values.append(ph)
