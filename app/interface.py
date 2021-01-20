@@ -110,13 +110,14 @@ class Interface:
         #TODO: try catch 
 
         try:
-            hv = session.query(HealthValue).filter_by(id=hv_id)
+            hv = session.query(HealthValue).filter_by(id=hv_id).first()
         except:
             return "No HealthValue with ID {} found.".format(hv_id)
         
         if hv:
             session.delete(hv)
             session.commit()
+            return "Value {} deleted.".format(hv)
         
         else:
             return "No HealthValue with ID {} found.".format(hv_id)

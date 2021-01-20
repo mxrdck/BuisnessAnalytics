@@ -22,6 +22,10 @@ class PatientHealth(base):
     patient = relationship('Patient',back_populates='health_values')
     health_value = relationship('HealthValue',back_populates='patients', cascade = "delete")
 
+
+    def __repr__(self):
+        return '{} {}'.format(self.healthvalue_id, self.health_value.__to_param_and_val__())
+
 class Patient(base):
     __tablename__ = 'Patient'
 
@@ -47,7 +51,10 @@ class HealthValue(base):
     patients = relationship('PatientHealth', back_populates="health_value", cascade="all, delete, delete-orphan")
 
     def __repr__(self):
-        return '<HealthValue {}: {} {}>'.format(self.id, session.query(HealthParameter).filter_by(id=self.parameter).first().denotation, self.value)
+        return '{}: {} {}'.format(self.id, session.query(HealthParameter).filter_by(id=self.parameter).first().denotation, self.value)
+
+    def __to_param_and_val__(self):
+        return '{} = {}'.format(session.query(HealthParameter).filter_by(id=self.parameter).first().denotation, self.value)
 class HealthParameter(base):
     __tablename__ = 'HealthParameter'
 
@@ -59,7 +66,7 @@ class HealthParameter(base):
         cascade="all,delete, delete-orphan, save-update")
 
     def __repr__(self):
-        return '<HealthParameter {}: {}>'.format(self.id, self.denotation)
+        return '{}: {}'.format(self.id, self.denotation)
 
 Session = sessionmaker(db)
 session = Session()

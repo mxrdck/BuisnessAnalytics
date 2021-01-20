@@ -203,7 +203,7 @@ class Page2(tk.Frame):
 
         GNr = db.get_all_params(only_ids=True)
         self.var1 = tk.StringVar(self)
-        self.var1.set(GNr[1])
+        self.var1.set(GNr[0])
 
         opt = tk.OptionMenu(self, self.var1, *GNr).grid(row=2, column=4, pady=8)
 
@@ -222,6 +222,32 @@ class Page2(tk.Frame):
 
 
 class Page3(tk.Frame):
+
+    def b_delete_val_from_patient(self):
+        try:
+            val = self.var3.get().split(' ')[0].replace(':','')
+            val = int(val)
+            ret = db.remove_value_from_patient(val)
+            mbox.showinfo('Success', str(ret))
+        except Exception as e:
+            mbox.showerror('Error', str(e))
+
+    def b_add_val_to_patient(self):
+        try:
+
+            patient_id = int(self.var1.get())
+            parameter_id = int(self.var2.get().split(' ')[0].replace(':',''))
+            hv_date = self.e1.get()
+            hv_value = self.e2.get()
+            
+
+
+            ret = db.add_value_to_patient(patient_id, parameter_id, hv_date, hv_value)
+            mbox.showinfo("Success", ret)
+
+        except Exception as e:
+            mbox.showerror("Error", str(e))
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Wert für Patienten eingeben",
@@ -231,12 +257,30 @@ class Page3(tk.Frame):
         l1 = tk.Label(self, text="Patienten ID").grid(row=2, column=1)
         l2 = tk.Label(self, text="Wert(Gld)").grid(row=2, column=3)
         l3 = tk.Label(self, text="Parameter(GNr)").grid(row=3, column=1)
-        l4 = tk.Label(self, text="Datum").grid(row=4, column=1)
-        l5 = tk.Label(self, text="Wert").grid(row=5, column=1)
+        l4 = tk.Label(self, text="Datum (YYYY-MM-DD)").grid(row=4, column=1, pady=10)
+        l5 = tk.Label(self, text="Wert").grid(row=5, column=1, pady=10)
 
-        PaID = [1, 2, 3]
+
+        paramID = db.get_all_params(only_ids=False)
+        self.var2 = tk.StringVar(self)
+        # falls nichts vorausgewählt sein soll .set(OptionList[0])
+        self.var2.set(paramID[0])
+
+        opt = tk.OptionMenu(self, self.var2, *paramID).grid(
+            row=3, column=2, pady=8)
+
+        hvs = db.get_values_for_patient(3)
+        self.var3 = tk.StringVar(self)
+        # falls nichts vorausgewählt sein soll .set(OptionList[0])
+        self.var3.set(hvs[0])
+
+        opt = tk.OptionMenu(self, self.var3, *hvs).grid(
+            row=2, column=4, pady=8)
+
+
+        PaID = db.get_all_patients(only_ids=True)
         self.var1 = tk.StringVar(self)
-        self.var1.set(PaID[1])
+        self.var1.set(PaID[0])
 
         opt = tk.OptionMenu(self, self.var1, *PaID).grid(row=2, column=2, pady=8)
         # Wert unsicher ob liste oder rnd
@@ -246,9 +290,9 @@ class Page3(tk.Frame):
         self.e2.grid(row=5, column=2)
 
         b1 = tk.Button(self, text="Wert speichern", width=20, height=2,
-                       bg="light slate blue").grid(column=1, row=6, padx=15, pady=40)
+                       bg="light slate blue", command=self.b_add_val_to_patient).grid(column=1, row=6, padx=15, pady=40)
         b2 = tk.Button(self, text="Wert löschen", width=20, height=2,
-                       bg="light slate blue").grid(row=3, column=3, pady=40)
+                       bg="light slate blue", command=self.b_delete_val_from_patient).grid(row=6, column=3, pady=40)
 
         # button to show frame 3 with text
         # layout3
