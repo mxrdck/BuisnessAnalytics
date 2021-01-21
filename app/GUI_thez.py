@@ -82,7 +82,7 @@ class PageOne(tk.Frame):
 
         for p in db.get_all_patients(only_ids=True):
             menu.add_command(label=p, 
-                             command=lambda value=p: self.var2.set(p))
+                             command=lambda p=p: self.var2.set(p))
 
     def clear_all(self):
         self.e1.delete(0,'end')
@@ -187,7 +187,7 @@ class PageTwo(tk.Frame):
 
         for p in db.get_all_params(only_ids=True):
             menu.add_command(label=p, 
-                             command=lambda value=p: self.var1.set(p))
+                             command=lambda p=p: self.var1.set(p))
 
     def clear_all(self):
         self.e1.delete(0,'end')
@@ -267,7 +267,7 @@ class PageThree(tk.Frame):
 
         for val in db.get_values_for_patient(self.var1.get()):
             menu.add_command(label=val, 
-                             command=lambda value=val: self.var3.set(val))
+                             command=lambda val=val: self.var3.set(val))
 
     def clear_all(self):
         self.e1.delete(0,'end')
@@ -281,7 +281,7 @@ class PageThree(tk.Frame):
 
         for val in db.get_values_for_patient(pat):
             menu.add_command(label=val, 
-                             command=lambda value=val: self.var3.set(val))
+                             command=lambda val=val: self.var3.set(val))
 
     def __init__(self, master):
         tk.Frame.__init__(self, master)
