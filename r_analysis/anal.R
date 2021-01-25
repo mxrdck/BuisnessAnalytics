@@ -35,7 +35,7 @@ avg_vals_by_patient_and_health <- function(PantientID) {
                 INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
                 INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
                 INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
-                WHERE "Patient".id=', PantientID, 'Group by denotation') 
+                WHERE "Patient".id=', PantientID, 'Group by denotation')
   
   query <- dbGetQuery(con, sql)
   print(query)
@@ -100,16 +100,16 @@ plot_vals_by_patient_and_health <- function(HealthParameterID, PantientID) {
 }
 
 #TODO fix this (shows always the same)
-plot_avg_health_by_patient <- function(PantientID) {
+plot_avg_health_by_patient <- function(HealthParameterID) {
   # Durchschnitte der Parameterwerte über alle Patienten (also pro Patient Durchschnitt der Parameterwerte eines bestimmten Parameters)
   # peo patient durschnitt für werte
   
-  sql <- paste('SELECT denotation, AVG(value) 
+  sql <- paste('SELECT patient_id, AVG(value) 
                 FROM "Patient"
                 INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
                 INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
                 INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
-                WHERE "Patient".id=', PantientID, 'Group by denotation') 
+                WHERE "HealthParameter".id=', HealthParameterID, 'Group by patient_id') 
   
   query <- dbGetQuery(con, sql)
   print(query)
