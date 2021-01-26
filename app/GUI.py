@@ -9,38 +9,39 @@ from tkinter import messagebox as mbox
 from datetime import datetime
 
 db = Interface()
-    
+#initiating app with start frame and App title    
 class SampleApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self._frame = None
         self.switch_frame(StartPage)
         self.title("Patient Manager")
-
+    #initiate method to change frame and thus navigate between windows
     def switch_frame(self, frame_class):
         new_frame = frame_class(self)
         if self._frame is not None:
             self._frame.destroy()
         self._frame = new_frame
         self._frame.pack()
-
+#create class for the first Frame (Startpage) containing subframes to better allocate widgets with grid
 class StartPage(tk.Frame):
     def __init__(self, master):
-        tk.Frame.__init__(self, master)
-        #self.frame=tk.Frame(bg="lavender", width=500, height=400)
+        tk.Frame.__init__(self, master) #master frame contains the first label and a subframe for buttons
         tk.Frame.configure(self, bg='azure')
+        #innitiating subframe for buttons
         f2=tk.Frame(self, height=100, width=200, bg="azure", borderwidth=2)
         f2.grid(row=2)
+
         label = tk.Label(self, text="Patient Manager",
                          font="Helvetica 20 bold", bg="azure")
         label.grid(row=1, padx=10, pady=30)
 
-
+        #initiate buttons to switch between main frames (windows)
         button1 = tk.Button(f2, text="Patient anlegen", bg="cornflower blue", activebackground="LightBlue1",
                             width=25, height=2, command=lambda: master.switch_frame(PageOne))
         button1.grid(row=2, padx=10, pady=10)
 
-        # button to show frame 2 with text layout2
+        
         button2 = tk.Button(f2, text="Gesundheitsparameter anlegen", bg="cornflower blue", activebackground="LightBlue1",
                             width=25, height=2, command=lambda: master.switch_frame(PageTwo))
         button2.grid(row=3, padx=10, pady=10)
@@ -49,7 +50,7 @@ class StartPage(tk.Frame):
                             width=25, height=2, command=lambda: master.switch_frame(PageThree))
         button3.grid(row=4, padx=10, pady=10)
 
-
+#create class for the second Page for Patient creation
 class PageOne(tk.Frame):
     def b_add_patient(self):
         try:
@@ -132,6 +133,7 @@ class PageOne(tk.Frame):
         self.e2.grid(row=4, column=1, pady=8)
         self.e3.grid(row=5, column=1, pady=8)
 
+        #initiate buttons to add and delete patients
         b_add = tk.Button(f3, text="Patient anlegen", width=20, height=2,
                        bg="cornflower blue", activebackground="LightBlue1", command=self.b_add_patient)
         b_add.grid(row=1, column=2, pady=10, padx=10)
@@ -150,14 +152,13 @@ class PageOne(tk.Frame):
         self.opt2.config(bg="cornflower blue", activebackground="LightBlue1")
         self.opt2.grid(row=2, column=3, pady=8)
 
-        # button to show frame 2 with text
-        # layout2
+        #initiate button to navigate back to StartPage
         b_back = tk.Button(self, text="zurück", width=15, height=1, bg="cornflower blue", activebackground="LightBlue1",
                              command=lambda: master.switch_frame(StartPage))
         b_back.grid(pady=10, padx=15, row=4)
-        #tk.Button(self, text="Go back to start page",
-                  #command=lambda: master.switch_frame(StartPage)).grid()
+        
 
+#create 3rd Page for setting health parameters
 class PageTwo(tk.Frame):
 
     def b_add_param(self):
@@ -197,7 +198,7 @@ class PageTwo(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
         tk.Frame.configure(self, bg="azure")
-        #tk.Frame.configure(self,bg='red')
+        
         f2 = tk.Frame(self, height=100, width=200, bg="azure", borderwidth=2)
         f2.grid(row=2)
         f3 = tk.Frame(self, height=100, width=200, bg="azure", borderwidth=2)
@@ -235,7 +236,7 @@ class PageTwo(tk.Frame):
                              command=lambda: master.switch_frame(StartPage))
         b3.grid(pady=10, padx=15, row=4)
 
-
+#create page for setting values for specific patients
 class PageThree(tk.Frame):
 
     def b_delete_val_from_patient(self):
@@ -328,7 +329,7 @@ class PageThree(tk.Frame):
 
         hvs = db.get_values_for_patient(self.PaID[0])
         self.var3 = tk.StringVar(self)
-        # falls nichts vorausgewählt sein soll .set(OptionList[0])
+        
         self.var3.set(hvs[0])
 
         self.opt1 = tk.OptionMenu(f2, self.var3, *hvs)
@@ -361,7 +362,7 @@ class PageThree(tk.Frame):
         b3.grid(row=4, padx=10, pady=10)
 
 
-
+#initiating App and setting size parameters
 if __name__ == "__main__":
     app = SampleApp()
     app.geometry('{}x{}'.format(800, 400))
