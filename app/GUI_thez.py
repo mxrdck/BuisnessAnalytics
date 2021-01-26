@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter import ttk
 from interface import Interface
 from tkinter import messagebox as mbox  
+from datetime import datetime
 
 db = Interface()
     
@@ -251,7 +252,7 @@ class PageThree(tk.Frame):
 
             patient_id = int(self.var1.get())
             parameter_id = int(self.var2.get().split(' ')[0].replace(':',''))
-            hv_date = self.e1.get()
+            hv_date = datetime.strptime(self.e1.get(),"%Y-%m-%d")
             hv_value = int(self.e2.get())
             
 

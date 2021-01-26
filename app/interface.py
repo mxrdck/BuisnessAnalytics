@@ -103,7 +103,7 @@ class Interface:
             p.health_values.append(ph)
 
             session.commit()
-            return "HV added to Patient"
+            return "HV {} added to Patient".format(hv.__to_param_and_val__())
 
         else:
             return "No Patient with ID {} found".format(patient_id)
