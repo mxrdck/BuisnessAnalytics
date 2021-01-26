@@ -4,15 +4,16 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, backref
 from datetime import date
 
+#this file contains a class for each table
+#each class implements the attributes and relationships among each other in sqlalchemy
+#each class is given methods for easier print statements and so on (e.g. __repr__ functions)
 
 db_string = "postgresql://postgres:1234@localhost:5432/patientdb"
 
 db = create_engine(db_string)
 base = declarative_base()
 
-# many to many relationship for patient -> healthvalues
-
-
+# many to many relationship for patient -> healthvalues: realized by helper table "PatientHealth"
 class PatientHealth(base):
     __tablename__ = "patient_health"
     id = Column(Integer, primary_key=True, autoincrement=True)
