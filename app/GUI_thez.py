@@ -62,7 +62,7 @@ class PageOne(tk.Frame):
             self.update_patients_dropdown()
             self.clear_all()
         except ValueError:
-            mbox.showerror('Value Error!','Please use Strings for first and last name and sex, integer for weight and float for height')
+            mbox.showerror('Value Error!','Please use\nStrings for first name and last name\nInteger for weight\nFloat for height')
         except Exception as e:
             mbox.showerror('Unknown Error', str(e))
 
@@ -252,14 +252,17 @@ class PageThree(tk.Frame):
             patient_id = int(self.var1.get())
             parameter_id = int(self.var2.get().split(' ')[0].replace(':',''))
             hv_date = self.e1.get()
-            hv_value = self.e2.get()
+            hv_value = int(self.e2.get())
             
 
             ret = db.add_value_to_patient(patient_id, parameter_id, hv_date, hv_value)
             mbox.showinfo("Success", ret)
             self.update_dropdowns()
+            self.clear_all()
+        except ValueError:
+            mbox.showerror('Value Error!','Please use\ncorrect date format for date\nInteger for Value')
         except Exception as e:
-            mbox.showerror("Error", str(e))
+            mbox.showerror('Unknown Error', str(e))
 
     def update_dropdowns(self):
         menu = self.opt1["menu"]
