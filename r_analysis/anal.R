@@ -35,7 +35,7 @@ avg_vals_by_patient_and_health <- function(PantientID) {
                 INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
                 INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
                 INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
-                WHERE "Patient".id=', PantientID, 'Group by denotation') 
+                WHERE "Patient".id=', PantientID, 'Group by denotation')
   
   query <- dbGetQuery(con, sql)
   print(query)
@@ -82,11 +82,11 @@ sd_health_byhealth <- function(HealthParameterID) {
   print(res)
 }
 
+#TODO fix this (shows always the same)
 plot_vals_by_patient_and_health <- function(HealthParameterID, PantientID) {
   # Zeichnen Sie geeignete Diagramme zur Visualisierung der Daten mit Hilfe von ggplot
   # Alle Parameter-Werte eines bestimmten Patienten zu einem bestimmten Parameter
-  HealthParameterID <- 1
-  PantientID <- 1
+  
   sql <- paste('SELECT value 
                 FROM "Patient"
                 INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
@@ -95,26 +95,26 @@ plot_vals_by_patient_and_health <- function(HealthParameterID, PantientID) {
                 WHERE "HealthParameter".id=', HealthParameterID, 'AND "Patient".id=', PantientID) 
   
   query <- dbGetQuery(con, sql)
-  p <- ggplot(query, aes(x=rownames(query), y=query[,])) + geom_bar(stat = "identity", width=0.2)
+  p <- ggplot(query, aes(x=rownames(query), y=query[,])) + geom_bar(stat = "identity", width=0.2) + ggtitle("Parameter Werte für Patient") + xlab("") + ylab("Wert")
   print(p)
 }
 
-plot_avg_health_by_patient <- function(PantientID) {
+#TODO fix this (shows always the same)
+plot_avg_health_by_patient <- function(HealthParameterID) {
   # Durchschnitte der Parameterwerte über alle Patienten (also pro Patient Durchschnitt der Parameterwerte eines bestimmten Parameters)
   # peo patient durschnitt für werte
   
-  PantientID <- 1
-  sql <- paste('SELECT denotation, AVG(value) 
+  sql <- paste('SELECT patient_id, AVG(value) 
                 FROM "Patient"
                 INNER JOIN "patient_health" ON "Patient".id="patient_health".patient_id
                 INNER JOIN "HealthValue" ON "patient_health".healthvalue_id="HealthValue".id
                 INNER JOIN "HealthParameter" ON "HealthValue".parameter="HealthParameter".id
-                WHERE "Patient".id=', PantientID, 'Group by denotation') 
+                WHERE "HealthParameter".id=', HealthParameterID, 'Group by patient_id') 
   
   query <- dbGetQuery(con, sql)
   print(query)
   query <- dbGetQuery(con, sql)
-  p <- ggplot(query, aes(x=query[,1], y=query[,2])) + geom_bar(stat = "identity", width=0.2)
+  p <- ggplot(query, aes(x=query[,1], y=query[,2])) + geom_bar(stat = "identity", width=0.2) + ggtitle("Parameter Werte für Patient") + xlab("") + ylab("Wert im Durchscnitt")
   print(p)
 }
 
