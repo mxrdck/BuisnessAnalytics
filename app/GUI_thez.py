@@ -15,6 +15,7 @@ class SampleApp(tk.Tk):
         tk.Tk.__init__(self)
         self._frame = None
         self.switch_frame(StartPage)
+        self.title("Patient Manager")
 
     def switch_frame(self, frame_class):
         new_frame = frame_class(self)
@@ -30,9 +31,9 @@ class StartPage(tk.Frame):
         tk.Frame.configure(self, bg='azure')
         f2=tk.Frame(self, height=100, width=200, bg="azure", borderwidth=2)
         f2.grid(row=2)
-        label = tk.Label(self, text="Gesundheitssystem von FMT",
+        label = tk.Label(self, text="Patient Manager",
                          font="Helvetica 20 bold", bg="azure")
-        label.grid(row=1, padx=10, pady=10)
+        label.grid(row=1, padx=10, pady=30)
 
 
         button1 = tk.Button(f2, text="Patient anlegen", bg="cornflower blue", activebackground="LightBlue1",
@@ -357,7 +358,7 @@ class PageThree(tk.Frame):
                          command=lambda: master.switch_frame(StartPage))
 
         
-        b3.grid(row=4, padx=10, pady=40)
+        b3.grid(row=4, padx=10, pady=10)
 
 
 
